@@ -129,19 +129,19 @@ def import_scenario(scn_filename):
     clear_scene()
 
     try:
-        scn_file = open(scn_filename, "r")
+        scn_file = open(scn_filename, "r", encoding='utf-8')
     except FileNotFoundError:
         try:
-            scn_file = open("scenarios/" + scn_filename, "r")
+            scn_file = open("scenarios/" + scn_filename, "r", encoding='utf-8')
         except FileNotFoundError:
             try:
-                scn_file = open(scn_filename + ".osf", "r")
+                scn_file = open(scn_filename + ".osf", "r", encoding='utf-8')
             except FileNotFoundError:
                 try:
-                    scn_file = open("scenarios/" + scn_filename + ".osf", "r")
+                    scn_file = open("scenarios/" + scn_filename + ".osf", "r", encoding='utf-8')
                 except FileNotFoundError:
                     try:
-                        scn_file = open("my_scenarios/" + scn_filename + ".osf", "r")
+                        scn_file = open("my_scenarios/" + scn_filename + ".osf", "r", encoding='utf-8')
                     except FileNotFoundError:
                         print("Scenario file not found.")
                         time.sleep(2)

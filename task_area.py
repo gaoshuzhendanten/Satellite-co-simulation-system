@@ -161,7 +161,7 @@ def export_satellites(satellites, area, area_name):
     for satellite in satellites:
         line = 'V|' + satellite.name + '|data/models/minisat.obj|' + str(satellite)
         lines.append(line + '\n')
-    with open(file_path,'w') as f:
+    with open(file_path,'w',encoding='utf-8') as f:
         f.write('\n'.join(lines))
 
 def draw_muti_stage(area):
@@ -186,15 +186,15 @@ if __name__ == "__main__":
     best_solution, scores = genetic_algorithm(num_satellites=num_satellites, area=area, num_generations=100, population_size=100, mutation_rate=0.2)
     print('Best solution:', [(satellite.height, satellite.ascending, satellite.inclination) for satellite in best_solution])
     print('Scores:', scores)
-    # state_code = input("是否导出并运行可视化仿真系统:")
-    # if state_code=='q' or state_code.lower()=='no':
-    #     pass
-    # else:
-    #     for i, satellite in enumerate(best_solution):
-    #         satellite.name = input(f'请输入第 {i + 1} 个卫星名称: ')
-    #     area_name = input('请输入探测区域名称: ')
-    #     export_satellites(best_solution, area, area_name)
-        # from main import *
+    state_code = input("是否导出并运行可视化仿真系统:")
+    if state_code=='q' or state_code.lower()=='no':
+        pass
+    else:
+        for i, satellite in enumerate(best_solution):
+            satellite.name = input(f'请输入第 {i + 1} 个卫星名称: ')
+        area_name = input('请输入探测区域名称: ')
+        export_satellites(best_solution, area, area_name)
+        from main import *
 
 
 """

@@ -19,25 +19,25 @@ def use_command_panel(vessels, bodies, surface_points, barycenters, maneuvers, r
         objects_text = ""
         
         for v in vessels:
-            objects_text += "VESSEL: " + v.get_name() + "\n"
+            objects_text += "卫星: " + v.get_name() + "\n"
 
         for b in bodies:
-            objects_text += "BODY: " + b.get_name() + "\n"
+            objects_text += "中心天体: " + b.get_name() + "\n"
             
         for sp in surface_points:
-            objects_text += "SURFACE POINT: " + sp.get_name() + "\n"
+            objects_text += "探测区域: " + sp.get_name() + "\n"
 
         for bc in barycenters:
-            objects_text += "BARYCENTER: " + bc.get_name() + "\n"
+            objects_text += "引力中心: " + bc.get_name() + "\n"
 
         for m in maneuvers:
-            objects_text += "MANEUVER: " + m.get_name() + "\n"
+            objects_text += "加速器: " + m.get_name() + "\n"
 
         for rp in radiation_pressures:
-            objects_text += "RADIATION PRESSURE: " + rp.get_name() + "\n"
+            objects_text += "辐射压力: " + rp.get_name() + "\n"
 
         for ad in atmospheric_drags:
-            objects_text += "ATMOSPHERIC DRAG: " + ad.get_name() + "\n"
+            objects_text += "大气阻力: " + ad.get_name() + "\n"
             
         for p in projections:
             objects_text += "PROJECTION: " + p.get_name() + "\n"
@@ -66,16 +66,16 @@ def use_command_panel(vessels, bodies, surface_points, barycenters, maneuvers, r
 
     def set_vars_field():
         sim_variables_field.config(state="normal")
-        vars_text = "Sim. Time: " + str(sim_time) + "\n"
-        vars_text += "Delta T: " + str(delta_t) + "\n"
-        vars_text += "Cycle Time: " + str(cycle_time) + "\n"
-        vars_text += "Output Rate: " + str(output_rate) + "\n"
-        vars_text += "\nCam. Strafe Speed: " + str(cam_strafe_speed) + "\n"
-        vars_text += "Cam. Rotate Speed: " + str(cam_rotate_speed) + "\n"
+        vars_text = "同步时间: " + str(sim_time) + "\n"
+        vars_text += "时间间隔: " + str(delta_t) + "\n"
+        vars_text += "周期: " + str(cycle_time) + "\n"
+        vars_text += "仿真帧率: " + str(output_rate) + "\n"
+        vars_text += "\n观察角度平移速度: " + str(cam_strafe_speed) + "\n"
+        vars_text += "观察角度旋转速度: " + str(cam_rotate_speed) + "\n"
         if scene_lock:
-            vars_text += "Scene Lock: " + str(scene_lock.get_name()) + "\n"
+            vars_text += "锁定设置: " + str(scene_lock.get_name()) + "\n"
         else:
-            vars_text += "Scene Lock: None\n"
+            vars_text += "锁定设置: None\n"
         sim_variables_field.delete(1.0, "end")
         sim_variables_field.insert(1.0, vars_text)
         sim_variables_field.config(state="disabled")
@@ -97,15 +97,15 @@ def use_command_panel(vessels, bodies, surface_points, barycenters, maneuvers, r
         if len(command_buffer):
 
             deletion_window = tk.Tk()
-            deletion_window.title("Delete Command")
+            deletion_window.title("撤销指令")
 
-            deletion_label = tk.Label(deletion_window, text="Type the index number of the command you want to delete from the buffer.")
+            deletion_label = tk.Label(deletion_window, text="键入要从缓冲区中撤销指令的索引号.")
             deletion_label.grid(row=0, column=0, columnspan=10)
 
             deletion_input = tk.Text(deletion_window, width=20, height=1)
             deletion_input.grid(row=1, column=4)
 
-            deletion_button = tk.Button(deletion_window, text="Delete", command=lambda:remove_from_buffer(deletion_input.get("1.0","end-1c")))
+            deletion_button = tk.Button(deletion_window, text="撤销", command=lambda:remove_from_buffer(deletion_input.get("1.0","end-1c")))
             deletion_button.grid(row=2, column=4)
 
     def use_command_window():
@@ -119,17 +119,17 @@ def use_command_panel(vessels, bodies, surface_points, barycenters, maneuvers, r
 
             # SHOW COMMAND
             if cmd_a == "show":
-                show_help = tk.Label(entry_panel, text="'show' command adds an output element to the command prompt/terminal.")
+                show_help = tk.Label(entry_panel, text="'show'命令将一个输出元素添加到命令提示符/终端.")
                 show_help.grid(row=0, column=0, columnspan=10)
                 # option 1
-                show_traj_button = tk.Button(entry_panel, text="Show Trajectories", command=lambda:add_to_buffer("show traj"))
+                show_traj_button = tk.Button(entry_panel, text="输出轨道", command=lambda:add_to_buffer("show traj"))
                 show_traj_button.grid(row=1, column=0)
                 show_traj_button.config(width=20,height=1)
 
                 # option 2
-                show_s1t1_label = tk.Label(entry_panel, text="Object")
-                show_s1t2_label = tk.Label(entry_panel, text="Variable")
-                show_s1t3_label = tk.Label(entry_panel, text="Display Label")
+                show_s1t1_label = tk.Label(entry_panel, text="对象")
+                show_s1t2_label = tk.Label(entry_panel, text="变量")
+                show_s1t3_label = tk.Label(entry_panel, text="标签")
                 show_s1t1_label.grid(row=2, column=1)
                 show_s1t2_label.grid(row=2, column=2)
                 show_s1t3_label.grid(row=2, column=3)
@@ -146,15 +146,15 @@ def use_command_panel(vessels, bodies, surface_points, barycenters, maneuvers, r
                         command = "show " + show_s1t1.get("1.0","end-1c") + " " + show_s1t2.get("1.0","end-1c") + " " + show_s1t3.get("1.0","end-1c")
                         add_to_buffer(command)
 
-                show_s1_button = tk.Button(entry_panel, text="Show Global Variable", command=generate_s1)
+                show_s1_button = tk.Button(entry_panel, text="输出全局变量", command=generate_s1)
                 show_s1_button.grid(row=3, column=0)
                 show_s1_button.config(width=20,height=1)
 
                 # option 3
-                show_s2t1_label = tk.Label(entry_panel, text="Object")
-                show_s2t2_label = tk.Label(entry_panel, text= "Variable")
-                show_s2t3_label = tk.Label(entry_panel, text="Frame of Ref.")
-                show_s2t4_label = tk.Label(entry_panel, text="Display Label")
+                show_s2t1_label = tk.Label(entry_panel, text="对象")
+                show_s2t2_label = tk.Label(entry_panel, text= "变量")
+                show_s2t3_label = tk.Label(entry_panel, text="引用帧")
+                show_s2t4_label = tk.Label(entry_panel, text="标签")
                 show_s2t1_label.grid(row=4, column=1)
                 show_s2t2_label.grid(row=4, column=2)
                 show_s2t3_label.grid(row=4, column=3)
@@ -174,14 +174,14 @@ def use_command_panel(vessels, bodies, surface_points, barycenters, maneuvers, r
                         command = "show " + show_s2t1.get("1.0","end-1c") + " " + show_s2t2.get("1.0","end-1c") + " " + show_s2t3.get("1.0","end-1c") + " " + show_s2t4.get("1.0","end-1c")
                         add_to_buffer(command)
 
-                show_s2_button = tk.Button(entry_panel, text="Show Relative Variable", command=generate_s2)
+                show_s2_button = tk.Button(entry_panel, text="输出关联变量", command=generate_s2)
                 show_s2_button.grid(row=5, column=0)
                 show_s2_button.config(width=20,height=1)
 
                 # option 4
-                show_s3t1_label = tk.Label(entry_panel, text="Maneuver")
-                show_s3t2_label = tk.Label(entry_panel, text="Data ('active'/'state'/'params')")
-                show_s3t3_label = tk.Label(entry_panel, text="Display Label")
+                show_s3t1_label = tk.Label(entry_panel, text="加速器")
+                show_s3t2_label = tk.Label(entry_panel, text="数据 ('活动'/'状态'/'参数')")
+                show_s3t3_label = tk.Label(entry_panel, text="标签")
                 show_s3t1_label.grid(row=6, column=1)
                 show_s3t2_label.grid(row=6, column=2)
                 show_s3t3_label.grid(row=6, column=3)
@@ -198,7 +198,7 @@ def use_command_panel(vessels, bodies, surface_points, barycenters, maneuvers, r
                         command = "show " + show_s3t1.get("1.0","end-1c") + " " + show_s3t2.get("1.0","end-1c") + " " + show_s3t3.get("1.0","end-1c")
                         add_to_buffer(command)
 
-                show_s3_button = tk.Button(entry_panel, text="Show Maneuver Data", command=generate_s3)
+                show_s3_button = tk.Button(entry_panel, text="输出加速器数据", command=generate_s3)
                 show_s3_button.grid(row=7, column=0)
                 show_s3_button.config(width=20,height=1)
 
@@ -1443,7 +1443,7 @@ def use_command_panel(vessels, bodies, surface_points, barycenters, maneuvers, r
     
     root = tk.Tk()
     root.protocol("WM_DELETE_WINDOW", on_panel_close)
-    root.title("OrbitSim3D Graphical Command Panel")
+    root.title("卫星协同仿真系统 图像命令面板")
 
     # COLUMN - OBJECTS
     objects_panel_label = tk.Label(root, text="Simulation Items")
