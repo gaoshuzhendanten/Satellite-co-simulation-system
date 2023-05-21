@@ -1,9 +1,27 @@
-<mxfile host="app.diagrams.net" modified="2023-05-21T09:33:30.981Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36" version="21.3.2" etag="WlZFlMWrbhO9awWrTnMq" type="github">
+<mxfile host="app.diagrams.net" modified="2023-05-21T09:38:15.422Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36" etag="ObQk3kGXcnCh5nsGEEfb" version="21.3.2" type="github">
   <diagram name="第 1 页" id="0UacgmOE1Y11QTVJHMGX">
-    <mxGraphModel>
+    <mxGraphModel dx="1050" dy="549" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="UaFjFQMqfVaKdU-YxcIa-1" value="Actor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="160" y="210" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="UaFjFQMqfVaKdU-YxcIa-2" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="120" width="200" height="430" as="geometry" />
+        </mxCell>
+        <mxCell id="UaFjFQMqfVaKdU-YxcIa-4" value="登录" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="140" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UaFjFQMqfVaKdU-YxcIa-5" value="协同决策" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="230" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UaFjFQMqfVaKdU-YxcIa-6" value="运行仿真" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="290" y="330" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="UaFjFQMqfVaKdU-YxcIa-8" value="查看结果" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="450" width="140" height="70" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
