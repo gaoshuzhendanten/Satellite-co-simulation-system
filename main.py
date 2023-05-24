@@ -149,7 +149,7 @@ def import_scenario(scn_filename):
                             os.system("cls")
                         else:
                             os.system("clear")
-                        init_sim()
+                        # init_sim()
 
     start_time = 0
 
@@ -1977,7 +1977,7 @@ def main(scn_filename=None, start_time=0):
 
     # destroy OpenGL window and return to menu
     glfw.destroy_window(window)
-    init_sim()
+    # init_sim()
 
 def pick_scenario():
     clear_cmd_terminal()
@@ -2014,86 +2014,87 @@ def pick_scenario():
     scn_filename = input(" > ")
     return scn_filename
     
-def init_sim():
-    global initial_run
-    #
-    # # do not run if started from IDLE, it must be
-    # # run from terminal/command prompt
-    # if "idlelib" in sys.modules:
-    #     print("OrbitSim3D does not run properly on IDLE Shell!")
-    #     print("Please run this program from the command line/terminal.")
-    #     print("Exiting...")
-    #     return -1
-    #
-    # clear_cmd_terminal()
-    #
-    # # on windows, change text color to green because yes
-    # if os.name == "nt":
-    #     os.system("color a")
-    #
-    # # display icon because it's cool
-    # icon_stages = []
-    # for i in range(10):
-    #     icon_stages.append(open("./data/images/anim_icon/" + str(i) + ".txt").readlines())
-    #
-    # # do it slowly the first time
-    # if initial_run:
-    #     for stage in icon_stages:
-    #         clear_cmd_terminal()
-    #         for line in stage:
-    #             print(line, end="")
-    #         time.sleep(0.015)
-    #
-    # # don't bother with eye candy otherwise
-    # else:
-    #     for line in icon_stages[-1]:
-    #         print(line, end="")
-    #
-    # print("\n")
-    #
-    # for i in range(50):
-    #     sys.stdout.write("= ")
-    #     sys.stdout.flush()
-    #     # this one too
-    #     if initial_run:
-    #         time.sleep(0.005)
-    #
-    # # global variable, yes, I know what I'm doing
-    # if initial_run:
-    #     time.sleep(0.5)
+# def init_sim():
+#     global initial_run
+#     #
+#     # # do not run if started from IDLE, it must be
+#     # # run from terminal/command prompt
+#     # if "idlelib" in sys.modules:
+#     #     print("OrbitSim3D does not run properly on IDLE Shell!")
+#     #     print("Please run this program from the command line/terminal.")
+#     #     print("Exiting...")
+#     #     return -1
+#     #
+#     # clear_cmd_terminal()
+#     #
+#     # # on windows, change text color to green because yes
+#     # if os.name == "nt":
+#     #     os.system("color a")
+#     #
+#     # # display icon because it's cool
+#     # icon_stages = []
+#     # for i in range(10):
+#     #     icon_stages.append(open("./data/images/anim_icon/" + str(i) + ".txt").readlines())
+#     #
+#     # # do it slowly the first time
+#     # if initial_run:
+#     #     for stage in icon_stages:
+#     #         clear_cmd_terminal()
+#     #         for line in stage:
+#     #             print(line, end="")
+#     #         time.sleep(0.015)
+#     #
+#     # # don't bother with eye candy otherwise
+#     # else:
+#     #     for line in icon_stages[-1]:
+#     #         print(line, end="")
+#     #
+#     # print("\n")
+#     #
+#     # for i in range(50):
+#     #     sys.stdout.write("= ")
+#     #     sys.stdout.flush()
+#     #     # this one too
+#     #     if initial_run:
+#     #         time.sleep(0.005)
+#     #
+#     # # global variable, yes, I know what I'm doing
+#     # if initial_run:
+#     #     time.sleep(0.5)
+#
+#     initial_run = False
+#
+#     print("\n\nOrbitSim3D Initialization\n")
+#     print("1) (L)oad Scenario")
+#     print("2) (S)tart Empty Scene")
+#     print("3) (C)onfigure OrbitSim3D")
+#
+#     menu_select = input("\n > ")
+#
+#     if menu_select == "1" or menu_select.lower() == "l":
+#         scn_path = pick_scenario()
+#
+#         if scn_path:
+#             import_scenario(scn_path)
+#         else:
+#             init_sim()
+#
+#     elif menu_select == "2" or menu_select.lower() == "s":
+#         main()
+#
+#     elif menu_select == "3" or menu_select.lower() == "c":
+#         configure_sim()
+#         init_sim()
+#
+#     # :) do the intro again
+#     elif menu_select == ":)" or menu_select == ":-)":
+#         initial_run = True
+#         init_sim()
+#
+#     else:
+#         print("Invalid selection!")
+#         time.sleep(2)
+#         init_sim()
 
-    initial_run = False
-    
-    print("\n\nOrbitSim3D Initialization\n")
-    print("1) (L)oad Scenario")
-    print("2) (S)tart Empty Scene")
-    print("3) (C)onfigure OrbitSim3D")
+# init_sim()
 
-    menu_select = input("\n > ")
-
-    if menu_select == "1" or menu_select.lower() == "l":
-        scn_path = pick_scenario()
-        
-        if scn_path:
-            import_scenario(scn_path)
-        else:
-            init_sim()
-            
-    elif menu_select == "2" or menu_select.lower() == "s":
-        main()
-
-    elif menu_select == "3" or menu_select.lower() == "c":
-        configure_sim()
-        init_sim()
-
-    # :) do the intro again
-    elif menu_select == ":)" or menu_select == ":-)":
-        initial_run = True
-        init_sim()
-
-    else:
-        print("Invalid selection!")
-        time.sleep(2)
-        init_sim()
-
-init_sim()

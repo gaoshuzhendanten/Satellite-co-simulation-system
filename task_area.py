@@ -4,12 +4,16 @@ import numpy as np
 import geopy.distance
 import random
 from math import radians, cos, sin, sqrt, ceil
+import task_area_panel
+import tkinter as tk
+from PIL import Image, ImageTk
 
 HEIGHT = 2000 #轨道高度
 SAMPLES_TIMES = 100 #均匀随机抽样个数
 LENGTH = 3000 #探测覆盖半径
 RADIUS = 6371 #地球半径
 SPEED = 7900 #总速度
+
 matplotlib.rcParams['font.sans-serif']=['SimSun']
 
 class Satellite:
@@ -58,10 +62,8 @@ class Satellite:
             ans += (pos1[i] - pos2[i]) ** 2
         return sqrt(ans)
 
-
 def generate_satellite():
     return Satellite(HEIGHT, random.uniform(-180, 180), random.uniform(-80, 80))
-
 
 def generate_satellites(num_satellites):
     satellites = []
@@ -73,15 +75,24 @@ def trapeze2coord(pos):
     lot,lat = pos
     return (RADIUS*cos(lot)*cos(lat), RADIUS*sin(lot)*cos(lat), RADIUS*sin(lat))
 
-
-def calc_fitness(satellites, area):
+samples_area = []
+def calc_fitness(satellites, area, flag):
     fitness = 0
-    #均匀随机抽样近似探测区域
-    samples_area = []
-    samples_area = [(random.uniform(area[0],area[1]),random.uniform(area[2],area[3])) for i in range(SAMPLES_TIMES)]
-    # if(len(samples_area)==0):
-        # for i in range(SAMPLES_TIMES):
-        #     samples_area.append((random.uniform(area[0],area[1]),random.uniform(area[2],area[3])))
+    if flag:#均匀随机抽样近似探测区域
+        if len(samples_area)==0:
+            for i in range(SAMPLES_TIMES):
+                samples_area.append((random.uniform(area[0],area[1]),random.uniform(area[2],area[3])))
+        else:
+            for i in range(SAMPLES_TIMES):
+                # print(i,len(samples_area),SAMPLES_TIMES)
+                samples_area[i] = (random.uniform(area[0],area[1]),random.uniform(area[2],area[3]))
+    else:#固定抽样点
+        if (len(samples_area) == 0):
+            line0 = np.linspace(area[0],area[1],10)
+            line1 = np.linspace(area[2], area[3], 10)
+            for lon in line0:
+                for lat in line1:
+                    samples_area.append((lon, lat))
     for pos in samples_area:
         for satellite in satellites:
             if satellite.get_distance(trapeze2coord(pos)) < LENGTH:
@@ -89,26 +100,7 @@ def calc_fitness(satellites, area):
                 break
     return ceil(fitness*1./SAMPLES_TIMES * 100)
 
-
-# # #固定抽样点
-# samples_area = []
-# def calc_fitness(satellites, area):
-#     fitness = 0
-#     if(len(samples_area)==0):
-#         line0 = np.linspace(area[0],area[1],10)
-#         line1 = np.linspace(area[2], area[3], 10)
-#         for lon in line0:
-#             for lat in line1:
-#                 samples_area.append((lon, lat))
-#     for pos in samples_area:
-#         for satellite in satellites:
-#             if satellite.get_distance(trapeze2coord(pos)) < LENGTH:
-#                 fitness+=1
-#                 break
-#     return fitness
-
-
-def genetic_algorithm(num_satellites, area, num_generations, population_size, mutation_rate):
+def genetic_algorithm(num_satellites, satellites_name, area, num_generations, population_size, mutation_rate, flag, output_txt):
     # 初始化适应度值和子代种群
     fitness = np.zeros(population_size)  #初始化适应度
     population = [generate_satellites(num_satellites) for i in range(population_size)]  #初始化种群
@@ -116,13 +108,15 @@ def genetic_algorithm(num_satellites, area, num_generations, population_size, mu
     max_score = [] #绘制迭代曲线
     for i in range(num_generations):  #迭代次数
         for j in range(population_size):  #遍历种群计算相应初始适应度
-            fitness[j] = calc_fitness(population[j], area)
+            fitness[j] = calc_fitness(population[j], area, flag)
         # 排序保留适应度最高的四分之一种群
         sorted_population = [p for _, p in sorted(zip(fitness, population), key=lambda x: x[0], reverse=True)]
         elites = sorted_population[0:population_size // 4]
-        max_score.append(calc_fitness(sorted_population[0],area))
-        print(f'第{i + 1}次迭代 max_score:{max_score[i]}')
+        max_score.append(calc_fitness(sorted_population[0],area, flag))
+        output_txt.insert(tk.INSERT, f'INFO: 第{i + 1}次迭代 max_score:{max_score[i]}\n')
+        output_txt.see(tk.END)
         # max_score.append(max(fitness))
+
         # 选择操作
         fitness_probs = fitness / np.sum(fitness)
         new_population = []
@@ -143,19 +137,30 @@ def genetic_algorithm(num_satellites, area, num_generations, population_size, mu
     # 返回最优解
     fitness = np.zeros(population_size)
     for j in range(population_size):
-        fitness[j] = calc_fitness(population[j],area)
+        fitness[j] = calc_fitness(population[j], area, flag)
     best_idx = np.argmax(fitness)
+    for idx,satellite in enumerate(population[best_idx]):
+        satellite.name = satellites_name[idx]
+
     max_score.append(fitness[best_idx])
     plt.plot(range(1,num_generations+2), max_score, c='blue')
     plt.xlabel("迭代次数", fontdict={'size': 16})
     plt.ylabel("得分", fontdict={'size': 16})
     plt.title("迭代次数得分曲线", fontdict={'size': 20})
-    plt.savefig('data/images/适应度函数的拟合效果1.png')
-    plt.show()
+    plt.savefig('data/images/iteration_score.png')
+    # plt.show()
+
+    temp_img = tk.Toplevel()
+    temp_img.title("迭代次数得分曲线")
+    global img_png
+    img_open = Image.open("data/images/iteration_score.png")
+    img_png = ImageTk.PhotoImage(img_open)
+    img_label = tk.Label(temp_img, image=img_png)
+    img_label.pack()
+
     return population[best_idx], fitness[best_idx]
 
-def export_satellites(satellites, area, area_name):
-    file_path = "my_scenarios/"+input("export file name :")+".osf"
+def export_satellites(file_path, satellites, area, area_name):
     lines = ['B|Earth|data/models/miniearth.obj|5972000000000000000000000|6371000|[0.0,0.25,1.0]|[0,0,0]|[0,0,0]|[[1,0,0],[0,1,0],[0,0,1]]|86400|0|0|0|0\n']
     lines.append(f'S|{area_name}|Earth|[1,0,0]|[{(area[2]+area[3])/2.},{(area[0]+area[1])/2.},0]')
     for satellite in satellites:
@@ -177,24 +182,45 @@ def draw_muti_stage(area):
     plt.savefig('data/images/多颗自主单星协同效果曲线.png')
     plt.show()
 
-
+def run(config, output_txt):
+    global HEIGHT
+    global SAMPLES_TIMES
+    global LENGTH
+    global RADIUS
+    global SPEED
+    HEIGHT = config.HEIGHT
+    SAMPLES_TIMES = config.SAMPLES_TIMES
+    LENGTH = config.LENGTH
+    RADIUS = config.RADIUS
+    SPEED = config.SPEED
+    best_solution, scores = genetic_algorithm(num_satellites= config.num_satellites,
+                                              satellites_name=config.satellites_names,
+                                              area=config.area,
+                                              num_generations=config.num_generations,
+                                              population_size=config.population_size,
+                                              mutation_rate=config.mutation_rate,
+                                              flag=config.flag,
+                                              output_txt=output_txt)
+    return best_solution
 
 if __name__ == "__main__":
-    num_satellites = int(input("部署卫星个数："))
-    area = tuple(map(int,input("探测区域范围：").split()))
+    task_area_panel.gui_start(run, export_satellites)
+
+    # num_satellites = int(input("部署卫星个数："))
+    # area = tuple(map(int,input("探测区域范围：").split()))
     # draw_muti_stage(area)
-    best_solution, scores = genetic_algorithm(num_satellites=num_satellites, area=area, num_generations=100, population_size=100, mutation_rate=0.2)
-    print('Best solution:', [(satellite.height, satellite.ascending, satellite.inclination) for satellite in best_solution])
-    print('Scores:', scores)
-    state_code = input("是否导出并运行可视化仿真系统:")
-    if state_code=='q' or state_code.lower()=='no':
-        pass
-    else:
-        for i, satellite in enumerate(best_solution):
-            satellite.name = input(f'请输入第 {i + 1} 个卫星名称: ')
-        area_name = input('请输入探测区域名称: ')
-        export_satellites(best_solution, area, area_name)
-        from main import *
+    # best_solution, scores = genetic_algorithm(num_satellites=num_satellites, area=area, num_generations=100, population_size=100, mutation_rate=0.2)
+    # print('Best solution:', [(satellite.height, satellite.ascending, satellite.inclination) for satellite in best_solution])
+    # print('Scores:', scores)
+    # state_code = input("是否导出并运行可视化仿真系统:")
+    # if state_code=='q' or state_code.lower()=='no':
+    #     pass
+    # else:
+    #     for i, satellite in enumerate(best_solution):
+    #         satellite.name = input(f'请输入第 {i + 1} 个卫星名称: ')
+    #     area_name = input('请输入探测区域名称: ')
+    #     export_satellites(best_solution, area, area_name)
+    #     from main import *
 
 
 """
